@@ -1,16 +1,22 @@
-# Node rules:
-## Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
-.grunt
+# Dependencies
+node_modules/
+vendor/
 
-## Dependency directory
-## Commenting this out is preferred by some people, see
-## https://docs.npmjs.com/misc/faq#should-i-check-my-node_modules-folder-into-git
-node_modules
+# Build output
+dist/
+build/
+target/
 
-# Book build output
-_book
+# Environment secrets
+.env
+.env.*
+!.env.example
 
-# eBook build output
-*.epub
-*.mobi
-*.pdf
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
