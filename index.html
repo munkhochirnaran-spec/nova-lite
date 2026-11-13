@@ -1,0 +1,471 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#10121b">
+<title>NOVA Lite</title>
+
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #10121b;
+  --panel: #191d2b;
+  --panel2: #22283a;
+  --accent: #8b7cff;
+  --text: #f4f4fa;
+  --muted: #9ca3b8;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, sans-serif;
+}
+header {
+  padding: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--panel);
+  border-bottom: 1px solid #30364b;
+}
+.logo { font-size: 23px; font-weight: 800; }
+.logo span { color: var(--accent); }
+main { padding: 15px; max-width: 1000px; margin: auto; }
+nav {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+}
+button {
+  border: 0;
+  border-radius: 9px;
+  padding: 11px 14px;
+  background: var(--panel2);
+  color: var(--text);
+  font-weight: 600;
+  cursor: pointer;
+}
+button.active, button.primary {
+  background: var(--accent);
+  color: white;
+}
+button:active { opacity: .75; }
+.panel {
+  background: var(--panel);
+  border: 1px solid #30364b;
+  border-radius: 13px;
+  padding: 15px;
+  margin-bottom: 14px;
+}
+h2 { font-size: 18px; margin-top: 0; }
+textarea {
+  width: 100%;
+  min-height: 280px;
+  resize: vertical;
+  background: #0b0d14;
+  color: #d9e1ff;
+  border: 1px solid #343b52;
+  border-radius: 9px;
+  padding: 13px;
+  font-family: monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  outline: none;
+}
+textarea:focus { border-color: var(--accent); }
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+iframe {
+  width: 100%;
+  height: 300px;
+  background: white;
+  border: 0;
+  border-radius: 9px;
+}
+.small { color: var(--muted); font-size: 13px; }
+#status { color: #a99cff; margin-top: 10px; }
+.hidden { display: none; }
+.card {
+  background: var(--panel2);
+  padding: 13px;
+  border-radius: 10px;
+  margin: 9px 0;
+}
+input {
+  max-width: 100%;
+  background: #0b0d14;
+  color: white;
+  padding: 10px;
+  border: 1px solid #343b52;
+  border-radius: 8px;
+}
+footer {
+  text-align: center;
+  padding: 25px;
+  color: var(--muted);
+  font-size: 12px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">NOVA<span> Lite</span></div>
+  <div class="small">Version 1.0</div>
+</header>
+
+<main>
+
+<nav>
+  <button class="active" data-page="editor">Editor</button>
+  <button data-page="notes">Second Brain</button>
+  <button data-page="vira">Vira</button>
+  <button data-page="about">About</button>
+</nav>
+
+<section id="editor" class="page">
+  <div class="panel">
+    <h2>Code Workspace</h2>
+    <p class="small">Choose what you want to edit.</p>
+
+    <nav id="languages">
+      <button class="active" data-lang="html">HTML</button>
+      <button data-lang="javascript">JavaScript</button>
+      <button data-lang="python">Python</button>
+      <button data-lang="rust">Rust</button>
+      <button data-lang="cpp">C++</button>
+      <button data-lang="lua">Lua</button>
+    </nav>
+
+    <textarea id="code" spellcheck="false"></textarea>
+
+    <div class="actions">
+      <button class="primary" id="run">Run</button>
+      <button id="preview">HTML Preview</button>
+      <button id="save">Save Project</button>
+      <button id="export">Export</button>
+      <button id="import">Import</button>
+      <input type="file" id="fileInput" accept=".json" hidden>
+    </div>
+    <div id="status">Ready.</div>
+    <p class="small">
+      HTML can be previewed. JavaScript runs in a temporary
+      sandbox. Other languages are currently editor-only.
+    </p>
+  </div>
+
+  <div class="panel">
+    <h2>Output</h2>
+    <iframe id="output" sandbox="allow-scripts"
+      title="Code output"></iframe>
+  </div>
+
+  <div class="panel">
+    <h2>Quick Links</h2>
+    <button id="coddy">Open Coddy ↗</button>
+  </div>
+</section>
+
+<section id="notes" class="page hidden">
+  <div class="panel">
+    <h2>Second Brain</h2>
+    <p class="small">Your notes are saved on this device.</p>
+    <textarea id="notesInput"
+      placeholder="Write your ideas, reminders and study notes..."></textarea>
+    <div class="actions">
+      <button class="primary" id="saveNotes">Save Notes</button>
+    </div>
+    <p id="notesStatus" class="small"></p>
+  </div>
+
+  <div class="panel">
+    <h2>Flashcards</h2>
+    <input id="question" placeholder="Question">
+    <br><br>
+    <input id="answer" placeholder="Answer">
+    <div class="actions">
+      <button class="primary" id="addCard">Add Card</button>
+      <button id="showCards">Show Cards</button>
+    </div>
+    <div id="cards"></div>
+  </div>
+</section>
+
+<section id="vira" class="page hidden">
+  <div class="panel">
+    <h2>Vira — Coding Teacher</h2>
+    <div class="card">
+      Hello! I'm Vira, your optional coding teacher.
+      What would you like to learn?
+    </div>
+    <div class="actions">
+      <button data-lesson="html">HTML Basics</button>
+      <button data-lesson="javascript">JavaScript</button>
+      <button data-lesson="variables">Variables</button>
+    </div>
+    <div id="lesson" class="card">
+      Select a lesson to begin.
+    </div>
+  </div>
+</section>
+
+<section id="about" class="page hidden">
+  <div class="panel">
+    <h2>About NOVA Lite</h2>
+    <p>A lightweight coding and productivity workspace.</p>
+    <p>Designed for mobile and desktop browsers.</p>
+    <p>Free to use. No API key required.</p>
+    <p class="small">
+      This is an early version. More features are planned.
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer>NOVA Lite · Built for learning and creating</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+
+let language = "html";
+let projects = {
+  html: "<h1>Hello, NOVA!</h1>\n<p>My first project.</p>",
+  javascript: 'console.log("Hello, NOVA!");',
+  python: 'print("Hello, NOVA!")',
+  rust: 'fn main() {\n    println!("Hello, NOVA!");\n}',
+  cpp: '#include <iostream>\nint main() {\n std::cout << "Hello, NOVA!";\n}',
+  lua: 'print("Hello, NOVA!")'
+};
+
+try {
+  const stored = JSON.parse(localStorage.getItem("novaProjects"));
+  if (stored) projects = {...projects, ...stored};
+} catch {}
+
+function setStatus(message) {
+  $("status").textContent = message;
+}
+
+function selectLanguage(next) {
+  projects[language] = $("code").value;
+  language = next;
+  $("code").value = projects[language];
+
+  document.querySelectorAll("[data-lang]").forEach(button => {
+    button.classList.toggle("active", button.dataset.lang === language);
+  });
+
+  setStatus("Editing " + language);
+}
+
+$("languages").addEventListener("click", event => {
+  const button = event.target.closest("[data-lang]");
+  if (button) selectLanguage(button.dataset.lang);
+});
+
+$("code").value = projects.html;
+
+$("code").addEventListener("input", () => {
+  projects[language] = $("code").value;
+});
+
+document.querySelectorAll("[data-page]").forEach(button => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll(".page").forEach(page =>
+      page.classList.add("hidden")
+    );
+    $(button.dataset.page).classList.remove("hidden");
+
+    document.querySelectorAll("[data-page]").forEach(item =>
+      item.classList.toggle("active", item === button)
+    );
+  });
+});
+
+function showPreview(html) {
+  const frame = $("output");
+  frame.removeAttribute("srcdoc");
+  frame.srcdoc = html;
+  setStatus("Preview updated.");
+}
+
+$("preview").onclick = () => {
+  if (language !== "html") {
+    setStatus("Select HTML first.");
+    return;
+  }
+  showPreview($("code").value);
+};
+
+$("run").onclick = () => {
+  if (language === "html") {
+    showPreview($("code").value);
+    return;
+  }
+
+  if (language !== "javascript") {
+    setStatus("This language needs an additional runtime.");
+    return;
+  }
+
+  const source = $("code").value
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e");
+
+  const frame = $("output");
+  frame.srcdoc = `
+    <!doctype html>
+    <meta http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'unsafe-inline';">
+    <pre id="result"></pre>
+    <script>
+      const result = document.getElementById("result");
+      const originalLog = console.log;
+      console.log = (...args) => {
+        result.textContent += args.join(" ") + "\\\\n";
+      };
+      try {
+        (new Function(${JSON.stringify(source)}))();
+      } catch (error) {
+        result.textContent += "Error: " + error.message;
+      }
+    <\/script>
+  `;
+
+  setStatus("JavaScript sent to sandbox.");
+};
+
+$("save").onclick = () => {
+  projects[language] = $("code").value;
+  try {
+    localStorage.setItem("novaProjects", JSON.stringify(projects));
+    setStatus("Project saved on this device.");
+  } catch {
+    setStatus("Could not save. Device storage may be full.");
+  }
+};
+
+$("export").onclick = () => {
+  projects[language] = $("code").value;
+  const blob = new Blob(
+    [JSON.stringify(projects, null, 2)],
+    {type: "application/json"}
+  );
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "nova-project.json";
+  link.click();
+  URL.revokeObjectURL(url);
+  setStatus("Project exported.");
+};
+
+$("import").onclick = () => $("fileInput").click();
+
+$("fileInput").onchange = async event => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  try {
+    const imported = JSON.parse(await file.text());
+    if (!imported || typeof imported !== "object" ||
+        Array.isArray(imported)) throw new Error();
+
+    for (const key of Object.keys(projects)) {
+      if (typeof imported[key] === "string") {
+        projects[key] = imported[key];
+      }
+    }
+
+    $("code").value = projects[language];
+    setStatus("Project imported.");
+  } catch {
+    setStatus("Invalid project file.");
+  }
+
+  event.target.value = "";
+};
+
+$("coddy").onclick = () =>
+  window.open("https://coddy.tech/", "_blank", "noopener");
+
+$("saveNotes").onclick = () => {
+  localStorage.setItem("novaNotes", $("notesInput").value);
+  $("notesStatus").textContent = "Notes saved!";
+};
+
+$("notesInput").value = localStorage.getItem("novaNotes") || "";
+
+let flashcards = [];
+try {
+  flashcards = JSON.parse(localStorage.getItem("novaCards")) || [];
+} catch {}
+
+$("addCard").onclick = () => {
+  const q = $("question").value.trim();
+  const a = $("answer").value.trim();
+
+  if (!q || !a) return;
+
+  flashcards.push({q, a});
+  localStorage.setItem("novaCards", JSON.stringify(flashcards));
+
+  $("question").value = "";
+  $("answer").value = "";
+  renderCards();
+};
+
+function renderCards() {
+  $("cards").replaceChildren();
+
+  flashcards.forEach((card, index) => {
+    const item = document.createElement("div");
+    item.className = "card";
+
+    const q = document.createElement("strong");
+    q.textContent = card.q;
+
+    const a = document.createElement("p");
+    a.textContent = card.a;
+
+    const remove = document.createElement("button");
+    remove.textContent = "Delete";
+    remove.onclick = () => {
+      flashcards.splice(index, 1);
+      localStorage.setItem("novaCards", JSON.stringify(flashcards));
+      renderCards();
+    };
+
+    item.append(q, a, remove);
+    $("cards").append(item);
+  });
+}
+
+$("showCards").onclick = renderCards;
+
+const lessons = {
+  html: "HTML builds the structure of a webpage. Try using headings, paragraphs and buttons.",
+  javascript: "JavaScript adds behavior to webpages. Try console.log('Hello!') in the editor.",
+  variables: "Variables store information. In JavaScript, try: let score = 10;"
+};
+
+document.querySelectorAll("[data-lesson]").forEach(button => {
+  button.onclick = () => {
+    $("lesson").textContent = lessons[button.dataset.lesson];
+  };
+});
+</script>
+
+</body>
+</html>
