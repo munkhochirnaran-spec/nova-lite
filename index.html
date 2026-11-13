@@ -467,6 +467,13 @@ document.querySelectorAll("[data-lesson]").forEach(button => {
   };
 });
 </script>
-
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js")
+      .catch(error => console.error("NOVA offline setup:", error));
+  });
+}
+</script>
 </body>
 </html>
