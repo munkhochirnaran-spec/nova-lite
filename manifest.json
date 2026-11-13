@@ -1,0 +1,18 @@
+
+{
+  "id": "./",
+  "name": "NOVA Lite",
+  "short_name": "NOVA",
+  "description": "A lightweight coding and productivity workspace.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#10121b",
+  "theme_color": "#10121b",
+  "categories": [
+    "education",
+    "productivity",
+    "utilities"
+  ]
+}
